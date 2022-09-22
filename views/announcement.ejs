@@ -1,0 +1,25 @@
+<%- include("partials/dashboard", {user:user}) -%>
+<head>
+	<title>History:</title>
+	<link version=2 rel="stylesheet" href="/css/style5.css"/>
+</head>
+<body>
+    <header>
+  <div class="main">
+<h1 class="mt-4">History</h1>
+<p class="lead mb-3">Past Results:</p>
+<div>
+  <% data.forEach(function(ele) {%>
+    <h3>Time: <%= ele.date %></h3>
+      <% if(ele.value===0) {%>
+        <p>Result: No Anomaly Detected</p>
+      <% }else{ %>
+        <p>Result: <b>Anomaly Detected</b></p>
+      <% } %>
+    
+    <p>DeviceId: <%= ele.deviceid %></p> 
+  <% }); %>
+</div>
+</div>
+</header>
+</body>

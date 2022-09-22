@@ -1,0 +1,19 @@
+<%- include("partials/dashboard", {user:user}) -%>
+<head>
+	<title>Dashboard</title>
+	<link version=2 rel="stylesheet" href="/css/style3.css"/>
+</head>
+<body>
+    <header>
+  <div class="main">
+<h1 class="mt-4">Dashboard</h1>
+<p style="color: white;" class="lead mb-3">Welcome <%= user.name %></p>
+
+<% if(user.post=="senior"){ %>1
+<a href="/anomaly" class="btn btn-secondary">Data</a>
+<% } %>
+<a href="/users/logout" class="btn btn-secondary">Logout</a>
+
+</div>
+</header>
+</body>

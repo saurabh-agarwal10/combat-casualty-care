@@ -1,0 +1,21 @@
+<%- include("partials/dashboard", {user:user}) -%>
+<head>
+	<title>Personal Info</title>
+	<link version=2 rel="stylesheet" href="/css/style3.css"/>
+</head>
+<body>
+    <header>
+  <div class="main">
+<h1 class="mt-4">Personal Info</h1>
+<p style="color: white;"class="lead mb-3">Welcome <%= user.name %></p>
+<p style="color: white;"class="lead mb-3">Age: <%= user.age %></p>
+<p style="color: white;"class="lead mb-3">Gender: <%= user.gender %></p>
+<p style="color: white;"class="lead mb-3">GovernmentID: <%= user.govid %></p>
+<p style="color: white;"class="lead mb-3">Email: <%= user.email %></p>
+<p style="color: white;"class="lead mb-3">Address: <%= user.address %></p>
+<p style="color: white;"class="lead mb-3">Post: <%= user.post %></p>
+<p style="color: white;"class="lead mb-3">Serving since: <%= user.date %></p>
+
+</div>
+</header>
+</body>

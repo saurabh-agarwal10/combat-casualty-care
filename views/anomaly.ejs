@@ -1,0 +1,794 @@
+<%- include("partials/dashboard", {user:user}) -%>
+<head>
+	<title>Data</title>
+	<link version=2 rel="stylesheet" href="/css/style5.css"/>
+</head>
+<style type="text/css">
+  .btn {
+      background-color:rgb(201, 56, 201);
+      cursor:pointer;
+      color: black;
+  }
+</style>
+
+<form id="myForm">
+  <br />
+  <input type="file" id="csvFile" accept=".csv" />
+  <br /><br />
+  <input class="btn"type="submit" value="Submit" />
+</form>
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0"> </script> 
+
+ 
+
+
+
+
+
+
+
+
+
+<script>
+
+
+  function csvToArray(str, delimiter = ",") {
+        const headers = str.slice(0, str.indexOf("\n")).split(delimiter);
+        const rows = str.slice(str.indexOf("\n") + 1).split("\n");
+        const arr = rows.map(function (row) {
+          const values = row.split(delimiter);
+          const el = headers.reduce(function (object, header, index) {
+            object[header] = values[index];
+            return object;
+          }, {});
+          return el;
+        });
+        return arr;
+  }  
+ // line breaks at end of textareas breaks code
+ 
+function myRemoveLineBreak(myBox){
+  while ( (myBox[myBox.length-1]  == '\n' )   || (myBox[myBox.length-1]  == '\r\n' )  )   {
+   myBox = myBox.slice(0, -1);
+ }
+  return myBox 
+}
+
+// helper function for very last step
+
+function flatten(arr) {
+  return [].concat(...arr)
+}
+
+
+function findIndexOfGreatest(array) {
+  var greatest;
+  var indexOfGreatest;
+  for (var i = 0; i < array.length; i++) {
+    if (!greatest || array[i] > greatest) {
+      greatest = array[i];
+      indexOfGreatest = i;
+    }
+  }
+  return indexOfGreatest;
+}
+</script>
+
+<br>
+Original CSV:<br><textarea id="myArea02" rows="3" cols="100" nowrap="" placeholder="length,width,height,label
+2,3,4,small
+4,6,7,big">
+</textarea><br><br>
+
+<input class="btn"type="button" value="Seperate Data and Labels" onclick="{
+ 
+
+ const myForm = document.getElementById('myForm');
+  const csvFile = document.getElementById('csvFile');
+  
+  myForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const input = csvFile.files[0];
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        const text = e.target.result;
+        const data = csvToArray(text);
+        document.write(text);
+      };
+
+      reader.readAsText(input);
+    });
+
+   document.getElementById('myArea01').value = '' 
+   document.getElementById('myText02').value = '' 
+   document.getElementById('myText03').value = '' 
+   document.getElementById('myLabelsSpot').innerHTML = ''                                                          
+                                                                                                              
+   let a = `trtbps,chol,class
+145,233,0
+130,250,0
+130,204,0
+120,236,0
+120,354,1
+140,192,0
+140,294,0
+120,263,0
+172,199,0
+150,168,0
+140,239,0
+130,275,0
+130,266,0
+110,211,0
+150,283,0
+120,219,0
+120,340,1
+150,226,0
+150,247,0
+140,239,0
+135,234,0
+130,233,0
+140,226,0
+150,243,0
+140,199,0
+160,302,0
+150,212,0
+110,175,0
+140,417,1
+130,197,0
+105,198,0
+120,177,0
+130,219,0
+125,273,0
+125,213,0
+142,177,0
+135,304,0
+150,232,0
+155,269,0
+160,360,1
+140,308,0
+130,245,0
+104,208,0
+130,264,0
+140,321,0
+120,325,0
+140,235,0
+138,257,0
+128,216,0
+138,234,0
+130,256,0
+120,302,0
+130,231,0
+108,141,0
+135,252,0
+134,201,0
+122,222,0
+115,260,0
+118,182,0
+128,303,0
+110,265,0
+108,309,0
+118,186,0
+135,203,0
+140,211,0
+138,183,0
+100,222,0
+130,234,0
+120,220,0
+124,209,0
+120,258,0
+94,227,0
+130,204,0
+140,261,0
+122,213,0
+135,250,0
+125,245,0
+140,221,0
+128,205,0
+105,240,0
+112,250,0
+128,308,0
+102,318,0
+152,298,0
+102,265,0
+115,564,1
+118,277,0
+101,197,0
+110,214,0
+100,248,0
+124,255,0
+132,207,0
+138,223,0
+132,288,0
+112,160,0
+142,226,0
+140,394,1
+108,233,0
+130,315,0
+130,246,0
+148,244,0
+178,270,0
+140,195,0
+120,240,0
+129,196,0
+120,211,0
+160,234,0
+138,236,0
+120,244,0
+110,254,0
+180,325,0
+150,126,0
+140,313,0
+110,211,0
+130,262,0
+120,215,0
+130,214,0
+120,193,0
+105,204,0
+138,243,0
+130,303,0
+138,271,0
+112,268,0
+108,267,0
+94,199,0
+118,210,0
+112,204,0
+152,277,0
+136,196,0
+120,269,0
+160,201,0
+134,271,0
+120,295,0
+110,235,0
+126,306,0
+130,269,0
+120,178,0
+128,208,0
+110,201,0
+128,263,0
+120,295,0
+115,303,0
+120,209,0
+106,223,0
+140,197,0
+156,245,0
+118,242,0
+150,240,0
+120,226,0
+130,180,0
+160,228,0
+112,149,0
+170,227,0
+146,278,0
+138,220,0
+130,197,0
+130,253,0
+122,192,0
+125,220,0
+130,221,0
+120,240,0
+132,342,1
+120,157,0
+138,175,0
+138,175,0
+160,286,0
+120,229,0
+140,268,0
+130,254,0
+140,203,0
+130,256,0
+110,229,0
+120,284,0
+132,224,0
+130,206,0
+110,167,0
+117,230,0
+140,335,1
+120,177,0
+150,276,0
+132,353,1
+150,225,0
+130,330,0
+112,230,0
+150,243,0
+112,290,0
+130,253,0
+124,266,0
+140,233,0
+110,172,0
+130,305,0
+128,216,0
+120,188,0
+145,282,0
+140,185,0
+170,326,0
+150,231,0
+125,254,0
+120,267,0
+110,248,0
+110,197,0
+125,258,0
+150,270,0
+180,274,0
+160,164,0
+128,255,0
+110,239,0
+150,258,0
+120,188,0
+140,177,0
+128,229,0
+120,260,0
+118,219,0
+145,307,0
+125,249,0
+132,341,1
+130,263,0
+130,330,0
+135,254,0
+130,256,0
+150,407,1
+140,217,0
+138,282,0
+200,288,1
+110,239,0
+145,174,0
+120,281,0
+120,198,0
+170,288,0
+125,309,0
+108,243,0
+165,289,0
+160,289,0
+120,246,0
+130,322,0
+140,299,0
+125,300,0
+140,293,0
+125,304,0
+126,282,0
+160,269,0
+174,249,0
+145,212,0
+152,274,0
+132,184,0
+124,274,0
+134,409,1
+160,246,0
+192,283,1
+140,254,0
+140,298,0
+132,247,0
+138,294,0
+100,299,0
+160,273,0
+142,309,0
+128,259,0
+144,200,0
+150,244,0
+120,231,0
+178,228,0
+112,230,0
+123,282,0
+108,269,0
+110,206,0
+112,212,0
+180,327,0
+118,149,0
+122,286,0
+130,283,0
+120,249,0
+134,234,0
+120,237,0
+100,234,0
+110,275,0
+125,212,0
+146,218,0
+124,261,0
+136,319,0
+138,166,0
+136,315,0
+128,204,0
+126,218,0
+152,223,0
+140,207,0
+140,311,0
+134,204,0
+154,232,0
+110,335,1
+128,205,0
+148,203,0
+114,318,0
+170,225,0
+152,212,0
+120,169,0
+140,187,0
+124,197,0
+164,176,0
+140,241,0
+110,264,0
+144,193,0
+130,131,0
+130,236,0`;                                                                                            
+   
+document.getElementById('myArea02').value = myRemoveLineBreak(a)
+                                                                                                                                  
+                                                             
+                                                             
+                                                             
+                                                             
+//  alert('not yet ready\nUsing the testing data below') 
+  //myIncoming = new Array()                                                           
+ myIncoming = document.getElementById('myArea02').value.split(/\r\n|\n/)                                                    
+// alert(myIncoming.length)    
+                                                            
+  myLabelsTemp = new Array(myIncoming.length)
+   myInSplit =    new Array(myIncoming.length)   
+   
+                                                      
+ for(var t=0;  t <= myIncoming.length-1; t++){
+    myInSplit[t] =  myIncoming[t].split(',')                                                   
+                                                 
+ }
+ //                 [1][2][3]
+//                    4  5  6
+// alert()                                                          
+                                                             
+//alert( myInSplit[0])  
+                                                             
+//alert(myLabelsTemp)                                                          
+                                                             
+                                                                                                          
+ // put label label in table    
+                                                             
+  Lab =     myInSplit[0].pop()                                                          
+                                                             
+ document.getElementById('myLabelsSpot').innerHTML =  Lab
+                                                             
+                                                                                              
+ document.getElementById('myText03').value =  myInSplit[0]                                                         
+                                                             
+                                                                                                   
+                                                             
+                                                             
+                                                             
+ //shift(myLabelsTemp)  
+                                                             
+
+                                                        
+  // randomly pick an unknown                                                           
+  myRand = Math.floor(Math.random() * myIncoming.length-1)                                                      
+                                                                         
+                                                             
+    for(var j=1;  j<=myIncoming.length-1; j++ ){  
+      Lab2 =     myInSplit[j].pop()                                                                                                                     
+     document.getElementById('myText02').value    +=  Lab2+'\n'  
+     document.getElementById('myArea01').value  +=   myInSplit[j]+'\n'                                                         
+        if ( myRand == j ){
+        document.getElementById('myText01').value  =    myInSplit[j]                                               
+    }                                                                  
+ }
+       document.getElementById('myArea01').value.trim()
+       document.getElementById('myText02').value.trim()                                                      
+                                                             
+   //for(var k=1;  k<=myInSplit.length-1; k++ ){                                                           
+                                                             
+     //}       
+                                         
+                                                             
+}"><br><br>
+
+
+
+<table border="1">
+<tbody><tr><th colsspan="2">Headings:</th><td></td></tr>
+<tr>
+<td>
+<textarea id="myText03" rows="1" cols="70" nowrap="" placeholder="length, width, height">Size, Weight</textarea>
+
+</td><td id="myLabelsSpot"></td></tr>
+
+<tr><th>Data:</th><th>Labels</th></tr>
+
+<tr><td><textarea id="myArea01" rows="10" cols="70" nowrap="" onscroll="{
+ 
+ document.getElementById('myText02').scrollTop =  document.getElementById('myArea01').scrollTop                                                    
+             
+ }" placeholder="length,width,height,label
+2,3,4,small
+4,6,7,big">1.0, 34
+9.8, 88
+5.0, 67
+6.0, 57
+7.0, 77
+2.3, 14
+12.1, 99
+15.1, 123</textarea></td><td>
+
+
+<textarea id="myText02" rows="10" cols="20" nowrap="" onscroll="{
+                                                         
+ document.getElementById('myArea01').scrollTop =  document.getElementById('myText02').scrollTop                                                    
+             
+}" placeholder="length,width,height,label
+2,3,4,small
+4,6,7,big">small
+big
+medium
+medium
+medium
+small
+big
+big</textarea></td></tr>
+</tbody></table>
+<br />
+<!-- The K value: <input id="myKvalue" type="text" value="3" placeholder="5"><br> -->
+The unknown: <input id="myText01" type="text" value="3.5, 56" placeholder="4.2, 5.1, 8.6"><br>
+
+<br>
+<input class="btn"type="button" id="myButton987" value="Detect Anomaly" onclick="{
+
+  (async function (){
+                                                               
+    document.getElementById('myArea01').value = myRemoveLineBreak(document.getElementById('myArea01').value)
+     
+    document.getElementById('myText01').value = myRemoveLineBreak(document.getElementById('myText01').value)
+    document.getElementById('myText02').value = myRemoveLineBreak(document.getElementById('myText02').value)
+    document.getElementById('myText03').value = myRemoveLineBreak(document.getElementById('myText03').value)
+                                                                                 
+                                                                                          
+                                                                                          
+                                                               
+                                                               
+                                                               
+                                                               
+                                                               
+                                                               
+   myMainArray = document.getElementById('myArea01').value.split(/\r\n|\n/);  // split at end of line
+                                                    
+   //myData = tf.tensor1d(myMainArray); 
+   myUnknown = tf.tensor1d(document.getElementById('myText01').value.split(','), 'float32'); 
+ //  myUnknown = tf.tensor1d(document.getElementById('myText01').value.split(',')); 
+                                           
+   myHeadingsArray = document.getElementById('myText03').value.split(',')
+
+
+
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+//////////////////////////////////////////////////////////////////////////////////////////// issues start
+
+
+   // Need to load the data
+   myDataArray = new Array(myHeadingsArray.length)
+
+
+   for (myA=0;  myA <= myMainArray.length-1 ; myA++){
+        myDataArray[myA] = myMainArray[myA].split(',')
+     
+   }
+
+                                                                                
+ //var myDataArray2 = myDataArray.map(parseFloat);                                                                               
+  var myDataArray2 = myDataArray.flat()                                                                                     
+                                                                                
+ // console.log('myDataArray')                                                                                           
+ // console.log(myDataArray)                                                                                        
+ // console.log('myDataArray2')                                                                                       
+ // console.log(myDataArray2)  
+  // console.log()
+                                                                     
+  // console.log('myMainArray.length')                                                                                 
+  // console.log(myMainArray.length)                                                                                         
+  // console.log('myHeadingsArray.length')                                           
+  // console.log(myHeadingsArray.length)                                                                              
+                                                                                
+ //alert(JSON.stringify(myDataArray))  // shows javascript array with squarebrackets
+
+
+  // myData = tf.tensor(myDataArray2, [150, 4], 'float32');   // need to extract the shape   
+   myData = tf.tensor(myDataArray2, [myMainArray.length, myHeadingsArray.length], 'float32');   // should adjust to the amount of data   
+  
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////// issues end
+
+ 
+
+
+
+   myLabelsArray = document.getElementById('myText02').value.split(/\r\n|\n/);
+ 
+
+
+   //myLabelsArray.length
+
+   myOriginalLoc = new Array(myLabelsArray.length)
+   for (x=0;  x <= myLabelsArray.length-1; x++ ){
+      myOriginalLoc[x] = x
+   }     
+   
+    
+  // check K value less than amount of data
+    // if (document.getElementById('myKvalue').value > myLabelsArray.length){
+    //     alert('Forcing K value to less than data points')
+    //     document.getElementById('myKvalue').value = myLabelsArray.length
+    //  }
+
+                                                  
+// myData.print('verbose')
+    //  document.getElementById('myDiv987').innerHTML =  'The Data tensor is [' + await myData.data() +']<br>'   
+      document.getElementById('myDiv987').innerHTML =  'The Groups Length ' + myLabelsArray.length + '<br>'  
+  //   document.getElementById('myDiv987').innerHTML =  ', myLabels tensor is [' + myLabelsArray +']<br>'   
+     document.getElementById('myDiv987').innerHTML +=  'The Unknown tensor is [' + await myUnknown.data() +']<br>'  
+
+
+      // Got to grab the shape to setup a pow sqrt tensor       
+
+      //alert(myLabelsArray.length)
+      //alert(myHeadingsArray.length)
+      myMainShape = new Array(2)
+      myMainShape[0] =myLabelsArray.length  
+      myMainShape[1] = myHeadingsArray.length
+      //alert(JSON.stringify(myMainShape))
+  
+      //const mySqrt = tf.tensor1d([0.5, 0.5, 0.5, 0.5, 0.5]);                                                                             
+      const mySqrt = tf.fill([myLabelsArray.length], 0.5, 'float32')                                                                       
+     // const mySqrt = tf.fill([myLabelsArray.length], 0.5)                                                            
+     // const mySqrt = tf.fill(myMainShape, 0.5)         // thought I needed multi-dimensional squareRoot, but will sum tensor first
+
+
+ 
+      //mySqrt.print('verbose')
+    
+      const myDiff = tf.sub(myData, myUnknown);   
+      const mySquaredDiff = tf.mul(myDiff, myDiff);
+     
+      const axis = 1;
+      const mySquaredDiffAdded = mySquaredDiff.sum(axis);
+ 
+      const myKNN = mySquaredDiffAdded.pow(mySqrt) 
+      myKnnArray = await myKNN.data()                                                                            
+                                                                                       
+   //   document.getElementById('myDiv987').innerHTML +=  'The KNN tensor is [' + myKnnArray +']<br>'
+
+      //myKnnArray = await myKNN.buffer()
+      
+       //   myKNN.print('verbose')                                                          
+       //alert(myKnnArray)                                           
+      // alert(myLabelsArray)                                           
+      // alert(myOriginalLoc)                                                             
+                                                                    
+      myJoinedArray = new Array(myLabelsArray.length)
+
+      for (y=0; y <= myLabelsArray.length-1; y++){
+         myJoinedArray[y] = new Array(3)
+      }
+
+
+
+
+      myJoinedArray = myJoinedArray.map(function(value, index){
+            return [myKnnArray[index], myLabelsArray[index], myOriginalLoc[index]];
+         })
+
+                                   
+       //alert(myJoinedArray)      
+
+
+
+
+
+
+
+
+
+// sort the triple array of KNN, label, location in original array                                            
+                                            
+  myJoinedArray.sort(function(a,b){
+     return a[0] - b[0];
+  });
+                                            
+
+  myTemp=''
+  myLabelAverage = ''
+  myLabelGroup = new Array(myLabelsArray.length)    
+  myLabelGroup[0] = new Array(2)                                            
+  myGrouping = 0;        
+
+  myUniqueLables = Array.from(new Set(myLabelsArray))  
+  myCount = new Array() 
+  for (h=0;  h<= myUniqueLables.length-1; h++){
+       myCount[h]=0
+   }                                         
+    // alert(myLabelsArray)
+    // alert(myUniqueLables)  
+
+
+
+
+
+
+                                    
+for (c=0;  c <= 2;   c++){
+   myTemp += myMainArray[myJoinedArray[c][2]] + ' label = '+ myJoinedArray[c][1] +'<br>'                                            
+  //  alert(myJoinedArray[c][0]+', '+myJoinedArray[c][1])
+                                            
+
+          for (h=0;  h<= myUniqueLables.length-1; h++){
+            if (myJoinedArray[c][1] == myUniqueLables[h]){
+               myCount[h] += 1
+            }
+          }
+       
+
+                                                     
+                                            
+  }                                            
+
+// alert(myTemp+', LabelArrayCount = '+ myUniqueLables[findIndexOfGreatest(myCount)])                                                 
+
+
+
+
+  document.getElementById('myDiv987').innerHTML +=  '<br>For the unknown: <font color=green>'+document.getElementById('myText01').value+
+        '</font>  <br>The K-Nearest-Neighbors :<br> <font color=blue>'+myTemp+'</font> Best Label = <font color=blue>'+myUniqueLables[findIndexOfGreatest(myCount)] +'</font><br>'   
+  
+
+  const data={'anomaly':myUniqueLables[findIndexOfGreatest(myCount)]}
+  console.log(data);
+  fetch('/anomaly',{
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Success:', data);
+  })
+  .catch((error) => {
+    console.error('Error:', error);
+  });
+
+  })()
+
+
+}"><br><br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<br><br>
+
+<div id='myDiv987'>...</div><br>
+
+</div>
+</header>
+</body>
